@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>😼 Moon Cat</title>
+<style>
+  :root{
+    --bg-url: url("https://images.unsplash.com/photo-1663102093386-dcac64bb141f?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  }
+
+  html,body{height:100%; margin:0;}
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color:#b00000;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:1rem;
+    overflow-x:hidden;
+    background-image: var(--bg-url);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: scroll;
+    position:relative;
+  }
+  @media (min-width:900px){ body{ background-attachment: fixed; } }
+  body::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: rgba(0,0,0,0.55);
+    z-index:0;
+  }
+
+  h1{ 
+    font-size:2.8rem; 
+    margin:0 0 3rem; 
+    transform: translateY(-80px); 
+    z-index:1; 
+    position:relative;
+    color:#ff4444;
+    text-shadow: 0 0 8px rgba(255,68,68,0.8), 0 0 16px rgba(255,68,68,0.5);
+    letter-spacing: 3px;
+  }
+
+  .button{
+    display:block;
+    width:260px;
+    margin:1rem auto;
+    padding:1rem;
+    font-size:1.1rem;
+    font-weight:700;
+    color:#fff;
+    border-radius:50px;
+    text-decoration:none;
+    transition: transform .2s;
+    position:relative;
+    z-index:1;
+    cursor:pointer;
+  }
+  .button:hover{ transform:scale(1.05); }
+
+  .chat{ background: linear-gradient(135deg,#8b0000,#b00000); }
+  .channel{
+    background: linear-gradient(270deg, red, orange, yellow, green, cyan, blue, violet, red);
+    background-size: 600% 600%;
+    animation: rgbShift 15s linear infinite;
+  }
+  @keyframes rgbShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+  .donate{
+    background: linear-gradient(135deg,#0044ff,#00ccff);
+    border:2px solid #00ccff;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse{ 0%{box-shadow:0 0 10px #00ccff} 50%{box-shadow:0 0 20px #00ccff} 100%{box-shadow:0 0 10px #00ccff} }
+
+  /* Модальное окно */
+  .modal {
+    display:none; 
+    position:fixed; 
+    z-index:999; 
+    left:0; top:0; width:100%; height:100%; 
+    background: rgba(0,0,0,0.7);
+    justify-content:center; 
+    align-items:center;
+  }
+  .modal-content {
+    background:#222;
+    color:#fff;
+    padding:2rem;
+    border-radius:15px;
+    text-align:center;
+    max-width:90%;
+  }
+  .modal-content input {
+    width:100%;
+    font-size:1.5rem;
+    padding:0.5rem;
+    margin-top:1rem;
+    text-align:center;
+    border:none;
+    border-radius:8px;
+    background:#444;
+    color:#fff;
+  }
+  .modal-content button {
+    margin-top:1rem;
+    padding:0.5rem 1rem;
+    font-size:1rem;
+    font-weight:bold;
+    border:none;
+    border-radius:8px;
+    background:#ff4444;
+    color:#fff;
+    cursor:pointer;
+    transition: background 0.3s;
+  }
+  .close {
+    position:absolute;
+    top:20px;
+    right:30px;
+    font-size:2rem;
+    color:#fff;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>😼 Moon Cat</h1>
+
+<a href="https://t.me/+J87CaijINuM4OWFi" class="button chat" target="_blank" rel="noopener">💬Наш чатик в Telegram</a>
+<a href="https://t.me/MoonCatBoost" class="button channel" target="_blank" rel="noopener">🚀Канал по бусту</a>
+<div class="button donate" id="donateBtn">🥙🥞Покормить кота</div>
+
+<!-- Модальное окно -->
+<div id="donateModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h2>На шаурму и лучшую жизнь</h2>
+    <input type="text" id="cardInput" value="4149499389934199" readonly onclick="this.select();">
+    <button id="copyBtn">Скопировать</button>
+  </div>
+</div>
+
+<script>
+const donateBtn = document.getElementById('donateBtn');
+const modal = document.getElementById('donateModal');
+const close = document.getElementById('closeModal');
+const copyBtn = document.getElementById('copyBtn');
+const cardInput = document.getElementById('cardInput');
+
+donateBtn.onclick = () => { modal.style.display = 'flex'; }
+close.onclick = () => { modal.style.display = 'none'; }
+window.onclick = (e) => { if(e.target==modal) modal.style.display='none'; }
+
+copyBtn.onclick = () => {
+  cardInput.select();
+  cardInput.setSelectionRange(0, 99999); // для мобильных
+  try {
+    const successful = document.execCommand('copy'); // старый способ, работает на всех
+    if(successful){
+      copyBtn.textContent = "Скопировано!";
+      copyBtn.style.background = "#4CAF50";
+      setTimeout(() => {
+        copyBtn.textContent = "Скопировать";
+        copyBtn.style.background = "#ff4444";
+      }, 2000);
+    } else {
+      alert("Не удалось скопировать, выделите и скопируйте вручную");
+    }
+  } catch (err) {
+    alert("Ошибка копирования, попробуйте вручную");
+  }
+};
+</script>
+
+</body>
+</html>
